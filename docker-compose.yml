@@ -1,0 +1,45 @@
+version: '3.6'
+
+# 배포 관련 파일입니다. 담당자와 상의 없이 수정 금지
+services:
+  backend:
+    container_name: java-library-backend
+    image: puleugo/java-library-backend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    networks:
+      - java-library-backend
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    container_name: java-library-postgres
+    image: postgres:14.1
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - 54321:54321
+    networks:
+      - java-library-backend
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  redis:
+    container_name: java-library-redis
+    image: redis:6.2.6
+    ports:
+      - 6370:6370
+    networks:
+      - java-library-backend
+
+volumes:
+  postgres-data:
+
+networks:
+  java-library-backend:
