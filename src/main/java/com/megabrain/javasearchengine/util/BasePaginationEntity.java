@@ -1,11 +1,14 @@
 package com.megabrain.javasearchengine.util;
 
+import java.util.List;
+
 public class BasePaginationEntity<T> {
-    private T[] items;
+    private List<T> items;
     private PaginationMetadataEntity metadata;
 
-    public BasePaginationEntity(T[] searchBookResponses, PaginationMetadataEntity metadata) {
+    public BasePaginationEntity(List<T> searchBookResponses, PaginationMetadataEntity metadata) {
         this.items = searchBookResponses;
         this.metadata = metadata;
     }
+
 }

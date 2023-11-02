@@ -1,34 +1,33 @@
 package com.megabrain.javasearchengine.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.megabrain.javasearchengine.dto.CreateBookRequest;
+import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Builder
 @Getter
 @Setter
+@Entity(name = "books")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
+    @Id
+    @GeneratedValue(generator = "increment")
     private Long id;
     private String name;
     private String author;
     private String publisher;
     private Boolean isRented;
 
-    private Book() {
-        id = 0L;
-        name = "";
-        author = "";
-        publisher = "";
-        isRented = false;
-    }
-
-    private Book(Long id, String name, String author, String publisher, Boolean isRented) {
-        this.id = id;
-        this.name = name;
-        this.author = author;
-        this.publisher = publisher;
-        this.isRented = isRented;
-    }
-
-    public static Book of(Long id, String name, String author, String publisher, Boolean isRented) {
-        return new Book(id, name, author, publisher, isRented);
+    public static Book from(CreateBookRequest createBookRequest) {
+        return Book.builder()
+                .name(createBookRequest.getName())
+                .author(createBookRequest.getAuthor())
+                .publisher(createBookRequest.getPublisher())
+                .isRented(createBookRequest.getIsRented())
+                .build();
     }
 }
