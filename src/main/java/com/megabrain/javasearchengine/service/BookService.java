@@ -49,7 +49,6 @@ public class BookService {
         Book book = Book.from(createBookRequest);
         book.setId(id);
         bookDao.save(book);
-        book.setId(id);
     }
 
     public void deleteBook(Long id) {

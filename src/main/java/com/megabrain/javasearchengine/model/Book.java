@@ -3,9 +3,11 @@ package com.megabrain.javasearchengine.model;
 import com.megabrain.javasearchengine.dto.CreateBookRequest;
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Builder
 @Getter
@@ -20,6 +22,8 @@ public class Book {
     private String name;
     private String author;
     private String publisher;
+    @Column(name = "published_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
+    private LocalDateTime publishedAt;
     private Boolean isRented;
 
     public static Book from(CreateBookRequest createBookRequest) {
@@ -28,6 +32,7 @@ public class Book {
                 .author(createBookRequest.getAuthor())
                 .publisher(createBookRequest.getPublisher())
                 .isRented(createBookRequest.getIsRented())
+                .publishedAt(LocalDateTime.now())
                 .build();
     }
 }

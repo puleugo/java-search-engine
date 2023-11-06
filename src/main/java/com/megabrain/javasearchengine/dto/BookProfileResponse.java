@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 public class BookProfileResponse {
@@ -21,6 +23,9 @@ public class BookProfileResponse {
     private String publisher = "";
 
     @NonNull
+    private LocalDateTime publishedAt = LocalDateTime.now();
+
+    @NonNull
     private Boolean isRented = false;
 
     public static BookProfileResponse from(Book book) {
@@ -29,6 +34,7 @@ public class BookProfileResponse {
         dto.name = book.getName();
         dto.author = book.getAuthor();
         dto.publisher = book.getPublisher();
+        dto.publishedAt = book.getPublishedAt();
         dto.isRented = book.getIsRented();
         return dto;
     }

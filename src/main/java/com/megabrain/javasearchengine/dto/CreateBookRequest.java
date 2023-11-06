@@ -1,13 +1,13 @@
 package com.megabrain.javasearchengine.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CreateBookRequest {
     @NonNull
     private String name;
@@ -16,20 +16,16 @@ public class CreateBookRequest {
     @NonNull
     private String publisher;
     @NonNull
+    private LocalDateTime publishedAt;
+    @NonNull
     private Boolean isRented;
 
-    private CreateBookRequest() {
-        name = "";
-        author = "";
-        publisher = "";
-        isRented = false;
-    }
-
-    public static CreateBookRequest of(String name, String author, String publisher, Boolean isRented) {
+    public static CreateBookRequest of(String name, String author, String publisher, LocalDateTime publishedAt, Boolean isRented) {
         CreateBookRequest dto = new CreateBookRequest();
         dto.name = name;
         dto.author = author;
         dto.publisher = publisher;
+        dto.publishedAt = publishedAt;
         dto.isRented = isRented;
         return dto;
     }
