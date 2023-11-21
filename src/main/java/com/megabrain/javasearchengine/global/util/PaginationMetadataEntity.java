@@ -1,4 +1,4 @@
-package com.megabrain.javasearchengine.util;
+package com.megabrain.javasearchengine.global.util;
 
 import lombok.NoArgsConstructor;
 

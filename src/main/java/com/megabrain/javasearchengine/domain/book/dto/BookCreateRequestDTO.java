@@ -1,4 +1,4 @@
-package com.megabrain.javasearchengine.dto;
+package com.megabrain.javasearchengine.domain.book.dto;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateBookRequest {
+public class BookCreateRequestDTO {
     @NonNull
     private String name;
     @NonNull
@@ -20,8 +20,8 @@ public class CreateBookRequest {
     @NonNull
     private Boolean isRented;
 
-    public static CreateBookRequest of(String name, String author, String publisher, LocalDateTime publishedAt, Boolean isRented) {
-        CreateBookRequest dto = new CreateBookRequest();
+    public static BookCreateRequestDTO of(String name, String author, String publisher, LocalDateTime publishedAt, Boolean isRented) {
+        BookCreateRequestDTO dto = new BookCreateRequestDTO();
         dto.name = name;
         dto.author = author;
         dto.publisher = publisher;
