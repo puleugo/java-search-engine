@@ -42,6 +42,10 @@ public class UserCookieManager {
     }
 
     private Optional<String> getUserSessionFromCookies(Cookie[] cookies) {
+        if (cookies == null) {
+            return Optional.empty();
+        }
+
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("user")) {
                 return Optional.ofNullable(cookie.getValue());
@@ -58,6 +62,7 @@ public class UserCookieManager {
 
     public String getLoginUsername(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+        System.out.println(cookies);
         String sessionId = getUserSessionFromCookies(cookies).orElseThrow(() -> new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
         return sessionId;
     }

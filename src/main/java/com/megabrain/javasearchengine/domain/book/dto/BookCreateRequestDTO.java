@@ -1,8 +1,12 @@
 package com.megabrain.javasearchengine.domain.book.dto;
 
-import lombok.*;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -15,18 +19,23 @@ public class BookCreateRequestDTO {
     private String author;
     @NonNull
     private String publisher;
-    @NonNull
-    private LocalDateTime publishedAt;
-    @NonNull
-    private Boolean isRented;
 
-    public static BookCreateRequestDTO of(String name, String author, String publisher, LocalDateTime publishedAt, Boolean isRented) {
+    private LocalDateTime publishedAt;
+
+    private String imageUrl;
+
+    public static BookCreateRequestDTO of(String name, String author, String publisher, String publishedAt,String imageUrl) {
         BookCreateRequestDTO dto = new BookCreateRequestDTO();
         dto.name = name;
         dto.author = author;
         dto.publisher = publisher;
-        dto.publishedAt = publishedAt;
-        dto.isRented = isRented;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (publishedAt != null && !publishedAt.isEmpty()) {
+            dto.publishedAt = LocalDateTime.parse(publishedAt, formatter);
+        }
+
+        dto.imageUrl = (imageUrl != null && !imageUrl.isEmpty()) ? imageUrl : dto.imageUrl; // null이거나 빈 문자열이면 기본값을 사용
         return dto;
     }
 

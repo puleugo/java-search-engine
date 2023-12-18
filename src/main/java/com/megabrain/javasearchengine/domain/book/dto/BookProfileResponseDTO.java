@@ -24,6 +24,9 @@ public class BookProfileResponseDTO {
     private String publisher = "";
 
     @NonNull
+    private String imageUrl = "";
+
+    @NonNull
     private LocalDateTime publishedAt = LocalDateTime.now();
 
     @NonNull
@@ -37,6 +40,7 @@ public class BookProfileResponseDTO {
         dto.author = book.getAuthor();
         dto.publisher = book.getPublisher();
         dto.publishedAt = book.getPublishedAt();
+        dto.imageUrl = book.getImageUrl();
         dto.isRented = bookAndIsRented.getIsRented();
         return dto;
     }
@@ -48,6 +52,8 @@ public class BookProfileResponseDTO {
         dto.author = book.getAuthor();
         dto.publisher = book.getPublisher();
         dto.publishedAt = book.getPublishedAt();
+        dto.imageUrl = book.getImageUrl();
+        dto.isRented = book.getIsRented();
         return dto;
     }
 }

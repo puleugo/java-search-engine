@@ -19,13 +19,19 @@ public class Book {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String name;// 도서 이름
 
     @Column(nullable = false)
-    private String author;
+    private String author; //  도서의 저자
 
     @Column(nullable = false)
-    private String publisher;
+    private String publisher; //출판사
+
+    @Column(nullable = false)
+    private Boolean isRented; // 현대 대여중인가
+
+    @Column(nullable = false)
+    private String imageUrl;
 
     @Column(name = "published_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private LocalDateTime publishedAt;
@@ -34,6 +40,8 @@ public class Book {
         return Book.builder()
                 .name(bookCreateRequestDTO.getName())
                 .author(bookCreateRequestDTO.getAuthor())
+                .isRented(false)
+                .imageUrl(bookCreateRequestDTO.getImageUrl())
                 .publisher(bookCreateRequestDTO.getPublisher())
                 .publishedAt(LocalDateTime.now())
                 .build();

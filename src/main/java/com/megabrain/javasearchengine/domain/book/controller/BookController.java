@@ -1,5 +1,7 @@
 package com.megabrain.javasearchengine.domain.book.controller;
 
+import com.megabrain.javasearchengine.domain.book.dto.BookRentDeadResponseDto;
+import com.megabrain.javasearchengine.domain.book.dto.BookRentResponseDTO;
 import com.megabrain.javasearchengine.domain.book.model.BookAndIsRented;
 import com.megabrain.javasearchengine.domain.book.model.BookRent;
 import com.megabrain.javasearchengine.domain.book.service.BookService;
@@ -36,11 +38,36 @@ public class BookController {
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
-    @GetMapping("/deadlines")
-    @RequiredRole({UserRole.ADMIN})
-    public ResponseEntity<List<BookRent>> getRentBooks() {
-        List<BookRent> books = this.bookService.getRentBooks();
+    @GetMapping("/search")
+    public ResponseEntity<List<BookProfileResponseDTO>> getBooksByKeyword(@RequestParam("keyword") String keyword) {
+        List<BookAndIsRented> bookAndIsRenteds = this.bookService.findBooksByKeyword(keyword);
+        List<BookProfileResponseDTO> books = bookAndIsRenteds.stream().map(BookProfileResponseDTO::from).collect(Collectors.toList());
         return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+    @GetMapping("/newbook/{id}")
+    public ResponseEntity<BookProfileResponseDTO> getNewBook(@PathVariable Long id) {
+        Book book= this.bookService.findNewBook(id);
+        BookProfileResponseDTO bookProfileResponseDTO = BookProfileResponseDTO.from(book);
+        return new ResponseEntity<>(bookProfileResponseDTO, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/deadlines")
+   //@RequiredRole({UserRole.ADMIN})
+    public ResponseEntity<List<BookRentDeadResponseDto>> getRentBooks() {
+        System.out.println("getRentBooks");
+        List<BookRent> books = this.bookService.getRentBooks();
+        System.out.println("getRentBooks" + books);
+        System.out.println("getRentBooks" + books.size());
+        List<BookRentDeadResponseDto> responseDto = books.stream()
+                .map(BookRentDeadResponseDto::from)
+                .collect(Collectors.toList());
+
+        for(int i= 0 ; i < responseDto.size(); i++){
+            System.out.println("getRentBooks" + responseDto.get(i).getName());
+        }
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping("/pagination")
@@ -59,7 +86,7 @@ public class BookController {
 
     @PostMapping()
     @Transactional
-    @LoginGuards
+  //  @LoginGuards
     @RequiredRole({UserRole.ADMIN})
     public ResponseEntity<BookProfileResponseDTO> createBook(@RequestBody BookCreateRequestDTO bookCreateRequestDTO) {
         Book book = this.bookService.createBook(bookCreateRequestDTO);
@@ -71,6 +98,13 @@ public class BookController {
     @RequiredRole({UserRole.USER, UserRole.ADMIN})
     public ResponseEntity rentBook(@PathVariable("id") Long id, @LoginUser User user) {
         this.bookService.rentBookById(user, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/return")
+    @RequiredRole({UserRole.USER, UserRole.ADMIN})
+    public ResponseEntity returnBook(@PathVariable("id") Long id, @LoginUser User user) {
+        this.bookService.returnBookById(user, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -89,5 +123,13 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable("id") Long id) {
         this.bookService.deleteBook(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/myrents")
+    @RequiredRole({UserRole.USER, UserRole.ADMIN})
+    public ResponseEntity<List<BookRentResponseDTO>> getMyRentedBooks(@LoginUser User user) {
+        List<BookRent> rentedBooks = this.bookService.findBooksRentedByUser(user.getId());
+        List<BookRentResponseDTO> rentResponses = rentedBooks.stream().map(BookRentResponseDTO::from).collect(Collectors.toList());
+        return new ResponseEntity<>(rentResponses, HttpStatus.OK);
     }
 }

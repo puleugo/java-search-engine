@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -68,6 +69,7 @@ public class BookService {
         Boolean exist = bookDao.existsById(id);
         if (!exist) throw new RuntimeException("Book not found");
         bookDao.deleteById(id);
+
     }
 
     public BookAndIsRented findBookAndIsRentById(Long id)  {
@@ -80,8 +82,13 @@ public class BookService {
         return books;
     }
 
+    public List<BookAndIsRented> findBooksByKeyword(String keyword) {
+        List<BookAndIsRented> books = bookDao.findBookAndIsRentByKeyword(keyword);
+        return books;
+    }
+
     public List<BookRent> getRentBooks() {
-        List<BookRent> books = bookRentDao.findByBookRentDeadlineBefore(LocalDateTime.now());
+        List<BookRent> books = bookRentDao.findByBookRentDeadlineBefore(LocalDate.now());
         return books;
     }
 
@@ -89,6 +96,28 @@ public class BookService {
         Book book = this.bookDao.findById(bookId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         LocalDate deadline = LocalDate.now().plusDays(ServicePolicy.RENT_PERIOD_DAYS);
         BookRent bookRent = BookRent.of(book, user, deadline);
+        book.setIsRented(true);
         this.bookRentDao.save(bookRent);
+        this.bookDao.save(book);
+    }
+
+    public Book findNewBook(Long rank) {
+        Page<Book> page = bookDao.findBooksSortedByPublishedAt(PageRequest.of((int) (rank - 1), 1));
+       return page.getContent().get(0);
+    }
+
+    public List<BookRent> findBooksRentedByUser(Long id) {
+        List<BookRent> books = bookRentDao.findByUserId(id);
+        return books;
+    }
+
+    public void returnBookById(User user, Long id) {
+        BookRent bookRent = bookRentDao.findByBookId(id);
+        Book book = bookRent.getBook();
+        book.setIsRented(false);
+        this.bookRentDao.delete(bookRent);
+        this.bookDao.save(book);
+        System.out.println("returnBookById" + bookRent);
+
     }
 }

@@ -3,6 +3,7 @@ package com.megabrain.javasearchengine.domain.book.dao;
 import com.megabrain.javasearchengine.domain.book.model.BookAndIsRented;
 import com.megabrain.javasearchengine.domain.book.model.Book;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -33,4 +34,11 @@ public interface BookDao extends PagingAndSortingRepository<Book, Long> {
         " FROM Book b" +
         " LEFT JOIN BookRent rent ON b.id = rent.book.id")
     List<BookAndIsRented> findAllBookAndIsRenteds();
+
+    @Query("SELECT b AS book FROM Book b WHERE b.name LIKE %:keyword%")
+    List<BookAndIsRented> findBookAndIsRentByKeyword(String keyword);
+
+
+    @Query("SELECT b FROM Book b ORDER BY b.publishedAt DESC")
+    Page<Book> findBooksSortedByPublishedAt(Pageable pageable);
 }
